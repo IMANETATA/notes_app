@@ -5,13 +5,21 @@ import 'auth/sign.dart';
 import 'home/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+//import 'firebase_options.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-void main()async{
+
+late bool isLogin;
+  void main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
+  // var user= FirebaseAuth.instance.currentUser;
+   /*if(user==null){
+    isLogin=false;
+   }else{
+    isLogin=true;
+   }*/
+   // options: DefaultFirebaseOptions.currentPlatform,
+  
   runApp(const MyApp());
 }
 
@@ -27,7 +35,7 @@ class MyApp extends StatelessWidget{
           titleLarge: TextStyle(fontSize: 20,color: Colors.white)
         )),
         
-      home:const Login(),
+      home: HomePage(),
       routes: {
         "login": (context)=>const Login(),
         "signup":(context)=>const SignUp(),

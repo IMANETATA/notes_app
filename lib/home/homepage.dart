@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   }
  ];
 
- 
+
 //recuperer les donnees du dernier personne connecte 
  getUser(){
   var user=FirebaseAuth.instance.currentUser;
@@ -43,6 +43,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title:const Text("home page"),
+          actions: [
+            IconButton(onPressed: ()async{
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacementNamed('login');
+            }, icon:const Icon(Icons.exit_to_app))
+          ],
         ),
         floatingActionButton: FloatingActionButton(child: const Icon(Icons.add),onPressed: (){
           Navigator.of(context).pushNamed("addnotes");
