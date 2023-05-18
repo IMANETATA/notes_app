@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// ignore: unused_import
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,7 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- List notes=[
+
+  CollectionReference notesref= FirebaseFirestore.instance.collection("notes");
+ /*List notes=[
   {"note":"i am programmer",
   "image":"a(2).png"
   },
@@ -22,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   "image":"a(2).png"
   }
  ];
-
+*/
 
 //recuperer les donnees du dernier personne connecte 
  getUser(){
@@ -53,16 +58,47 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(child: const Icon(Icons.add),onPressed: (){
           Navigator.of(context).pushNamed("addnotes");
         },),
+
         body: Container(
+  margin: const EdgeInsets.all(0),
+  child: FutureBuilder( // afficher les donnee de la note dan le homepgae
+    future: notesref.where("userid", isEqualTo: FirebaseAuth.instance.currentUser!.uid).get(),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, i) {
+            return Text("${(snapshot.data!.docs[i].data() as Map<String, dynamic>)['title'] ?? 'N/A'}");
+           // return Text("${snapshot.data!.docs[i].data()?['title'] ?? 'N/A'}");
+          //  return Text("${snapshot.data!.docs[i].data()['title']}");
+            // return ListNotes(notes: notes[index]);
+            // Utilisez la ligne ci-dessus si vous avez une classe ListNotes et souhaitez afficher des notes sous forme de widget.
+          },
+        );
+      } 
+        // Gérer le cas où les données ne sont pas encore disponibles
+        return const Center(child:  CircularProgressIndicator());
+      
+    },
+  ),
+),
+        /*body: Container(
           margin:const EdgeInsets.all(0),
-          child: ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (BuildContext context, int index) {
-              //-----swip pour supprimer les notes-----
-              return Dismissible(key: Key("$index"), child:ListNotes(notes:notes[index]) ) ;// ListNotes(notes:notes[index] ,) ;//class
+          child: FutureBuilder(
+            future : notesref.where("userid",isEqualTo: FirebaseAuth.instance.currentUser!.uid ).get(), 
+            builder: (context,snapshot){
+              if(snapshot.hasData){
+                return  ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: ( context,  i ) {
+              
+              return Text("${snapshot.data!.docs[i].data()!['title']}");// ListNotes(notes:notes[index] ,) ;//class
             },
-          ),
-        ),
+          );
+              }
+            }
+            )
+        ),*/
         
     );
   }

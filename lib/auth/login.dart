@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:notes_app/component/alert.dart';
 //import 'package:geolocator/geolocator.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,6 +21,7 @@ signIn()async{
    if(formdata!.validate()){
     formdata.save();
     try {
+      showLoading(context);
   final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
     email: myemail,
     password: mypassword
@@ -27,9 +29,11 @@ signIn()async{
   return credential;
 } on FirebaseAuthException catch (e) {
   if (e.code == 'user-not-found') {
+    Navigator.of(context).pop();  
     AwesomeDialog (context:context,title:"error",body:const Text("no user found for this email")).show();
    
   } else if (e.code == 'wrong-password') {
+    Navigator.of(context).pop();  
     AwesomeDialog (context:context,title:"error",body:const Text("wrong password for that user")).show();
    
   }

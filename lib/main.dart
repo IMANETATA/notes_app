@@ -12,12 +12,12 @@ late bool isLogin;
   void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // var user= FirebaseAuth.instance.currentUser;
-   /*if(user==null){
+   var user= FirebaseAuth.instance.currentUser;
+   if(user==null){ //user exists
     isLogin=false;
-   }else{
+   }else{ // not exists
     isLogin=true;
-   }*/
+   }
    // options: DefaultFirebaseOptions.currentPlatform,
   
   runApp(const MyApp());
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget{
           titleLarge: TextStyle(fontSize: 20,color: Colors.white)
         )),
         
-      home: HomePage(),
+      home: Login(),
       routes: {
         "login": (context)=>const Login(),
         "signup":(context)=>const SignUp(),

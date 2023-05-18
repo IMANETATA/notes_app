@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:notes_app/component/alert.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:geolocator/geolocator.dart';
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -22,6 +24,7 @@ class _SignUpState extends State<SignUp> {
     if(formdata!.validate()){
 formdata.save();//chaque valeur se stockent dans son propre champs
 try {
+    showLoading(context);
   final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
     email: myemail,
     password: mypassword,
@@ -29,18 +32,19 @@ try {
   return credential;
 } on FirebaseAuthException catch (e) {
   if (e.code == 'weak-password') {
+    Navigator.of(context).pop();  
     AwesomeDialog (context:context,title:"error",body:const Text("pass too weak")).show();
    
   } else if (e.code == 'email-already-in-use') {
+    Navigator.of(context).pop();  
     AwesomeDialog (context:context,title:"error",body:const Text("the account already exist")).show();
    
   }
 } catch (e) {
   print(e);
 }
-    }else{
-      
-    }
+    }else{}
+    return null;
    // return null ;
   }
   
@@ -139,6 +143,13 @@ return "password cant be less than 2 caractere";
   UserCredential? response=  await signUp();
   
   if(response!=null){
+    //ajouter le user a la base
+    await FirebaseFirestore.instance.collection("users").add(
+      {
+        'username':myusername,
+        'email':myemail
+      }
+    );
     Navigator.of(context).pushReplacementNamed("homepage");
   }else{
     print("sign up failed");
