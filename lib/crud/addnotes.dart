@@ -22,7 +22,7 @@ class _AddNotesState extends State<AddNotes> {
 
       CollectionReference notesref= FirebaseFirestore.instance.collection("notes");
       late Reference ref;
-      late File file;
+      late File ?file;
       var title,note,imageurl;
 
 
@@ -31,12 +31,12 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
 
 //ajouter la note dans la base
       addNotes() async{
-        if(file== null){ // if he dosnt choose an image
+        if(file == null){ // if he dosnt choose an image
           return AwesomeDialog(context: this.context,
           title:'important',
-          body:  Text
-          
-          )
+          body: const Text("please choose an image for note"),
+          dialogType: DialogType.error
+          )..show();
         }
         var formdata = formstate.currentState;
         if(formdata!.validate()){
