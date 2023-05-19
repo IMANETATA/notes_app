@@ -11,14 +11,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:notes_app/component/alert.dart';
 import 'package:path/path.dart' ;
 //as path
-class AddNotes extends StatefulWidget {
-  const AddNotes({super.key});
+class EditNotes extends StatefulWidget {
+  const EditNotes({super.key});
 
   @override
-  State<AddNotes> createState() => _AddNotesState();
+  State<EditNotes> createState() => _EditNotesState();
 }
 
-class _AddNotesState extends State<AddNotes> {
+class _EditNotesState extends State<EditNotes> {
 
       CollectionReference notesref= FirebaseFirestore.instance.collection("notes");
       late Reference ref;
@@ -30,7 +30,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
 
 
 //ajouter la note dans la base
-      addNotes(context) async{
+      editNotes(context) async{
         if(file == null){ // if he dosnt choose an image
           return AwesomeDialog(context: this.context,
           title:'important',
@@ -39,6 +39,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
           )..show();
         }
         var formdata = formstate.currentState;
+
                 if (formdata!.validate()) {
           showLoading(context);
           formdata.save();
@@ -57,6 +58,21 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
           
           Navigator.of(context).pushNamed("homepage");
         }
+
+       /* if(formdata!.validate()){
+          showLoading(context);
+          formdata.save();
+          await ref.putFile(file);
+        imageurl = await ref.getDownloadURL();
+          await notesref.add({
+            "title": title,
+            "note": note,
+            "imageurl":imageurl,
+            "userid":FirebaseAuth.instance.currentUser!.uid //recuperer luser actuel connecte 
+        });
+        
+        Navigator.of(this.context).pushNamed("homepage");
+        }*/
       }
 
   @override
@@ -125,7 +141,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
                ElevatedButton(
                
                 onPressed: ()async{
-                 await addNotes(context);
+                 await editNotes(context);
                 },
             // style:ButtonStyle(backgroundColor: Colors) ,
                child: 

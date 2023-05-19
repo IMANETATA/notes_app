@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app/crud/editnotes.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
         return ListView.builder(
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, i) {
-            return Text("${(snapshot.data!.docs[i].data() as Map<String, dynamic>)['title'] ?? 'N/A'}");
+            return ListNotes(notes: snapshot.data!.docs[i],);
            // return Text("${snapshot.data!.docs[i].data()?['title'] ?? 'N/A'}");
           //  return Text("${snapshot.data!.docs[i].data()['title']}");
             // return ListNotes(notes: notes[index]);
@@ -118,15 +119,17 @@ const ListNotes({super.key, this.notes});
     Row(children: [
       Expanded(
         flex: 1,
-        child: Image.asset("images/a(2).png",fit: BoxFit.fill,height:100 ,)
+        child: Image.network("${notes['imageurl']}",fit: BoxFit.fill,height:100 ,)
       ) ,
       Expanded(
         flex: 3,
         child: ListTile(
-        title:const Text("titre"),
+        title: Text("${notes['title']}"),
         subtitle: Text("${notes["note"]}"),
         trailing: IconButton(onPressed: (){
-      
+      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+        return const EditNotes();
+      }));
         }, icon:const Icon(Icons.edit)),
         
           ),
