@@ -9,13 +9,17 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:notes_app/component/alert.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' ;
 //as path
 class EditNotes extends StatefulWidget {
 
+        // ignore: prefer_typing_uninitialized_variables
         late final  docid;
+        // ignore: prefer_typing_uninitialized_variables
         final list;
-        EditNotes({Key? key, this.docid,this.list}) : super(key: key);
+         // ignore: prefer_const_constructors_in_immutables
+         EditNotes({Key? key, this.docid,this.list}) : super(key: key);
             // EditNotes({super.key});
   @override
   State<EditNotes> createState() => _EditNotesState();
@@ -26,6 +30,7 @@ class _EditNotesState extends State<EditNotes> {
       CollectionReference notesref= FirebaseFirestore.instance.collection("notes");
       late Reference ref;
       late File ?file;
+      // ignore: prefer_typing_uninitialized_variables
       var title,note,imageurl;
 
 
@@ -41,14 +46,16 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
            if (formdata!.validate()) {
           showLoading(context);
           formdata.save();
-          
           await notesref.doc(widget.docid).update({
-            "title": title,
-            "note": note,
-      // récupérer l'utilisateur actuel connecté
-          });
-          
-          Navigator.of(context).pushNamed("homepage");
+              "title": title,
+              "note": note,
+            }).then((value) {
+              Navigator.of(context).pushNamed("homepage");
+            }).catchError((e) {
+              // ignore: avoid_print
+              print("$e");
+            });
+    
         }
         }
           if (formdata!.validate()) {
@@ -60,6 +67,11 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
             "note": note,
             "imageurl": imageurl,
             // récupérer l'utilisateur actuel connecté
+          }).then((value){
+            Navigator.of(context.pushNamed("homepage"));
+          }).catchError((e){
+            // ignore: avoid_print
+            print("$e");
           });
           
           Navigator.of(context).pushNamed("homepage");
@@ -175,9 +187,12 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
 
           file=File(picked.path);
           var  rand= Random().nextInt(100000);
+          // ignore: prefer_interpolation_to_compose_strings
           var imagename = "$rand" + basename(picked.path);
           //var ref= 
+        // ignore: unnecessary_string_interpolations
         FirebaseStorage.instance.ref("images").child("$imagename"); 
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
 
         }
@@ -209,9 +224,12 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
 
           file=File(picked.path);
           var  rand= Random().nextInt(100000);
+          // ignore: prefer_interpolation_to_compose_strings
           var imagename = "$rand" + basename(picked.path);
        //var ref= 
+        // ignore: unnecessary_string_interpolations
         FirebaseStorage.instance.ref("images").child("$imagename"); 
+       // ignore: use_build_context_synchronously
        Navigator.of(context).pop();
       
         }

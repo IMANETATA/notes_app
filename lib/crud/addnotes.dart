@@ -53,9 +53,11 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
             "note": note,
             "imageurl": imageurl,
             "userid": FirebaseAuth.instance.currentUser!.uid // récupérer l'utilisateur actuel connecté
+          }).then((value){
+            Navigator.of(context.pushNamed("homepage"));
+          }).catchError((e){
+            print("$e");
           });
-          
-          Navigator.of(context).pushNamed("homepage");
         }
       }
 

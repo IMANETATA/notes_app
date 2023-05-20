@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_app/crud/editnotes.dart';
+import 'package:notes_app/crud/viewnotes.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -128,27 +129,36 @@ class ListNotes extends StatelessWidget {
   @override
  
   Widget build(BuildContext context) {
-    return Card(child:
-    Row(children: [
-      Expanded(
-        flex: 1,
-        child: Image.network("${notes['imageurl']}",fit: BoxFit.fill,height:100 ,)
-      ) ,
-      Expanded(
-        flex: 3,
-        child: ListTile(
-        title: Text("${notes['title']}"),
-        subtitle: Text("${notes['note']}"),
-        trailing: IconButton(onPressed: (){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context){
-        return EditNotes(docid:docid ,list: notes,);
-      }));
-        }, icon:const Icon(Icons.edit)),
-        
-          ),
-      ) , 
-      
-    ],)
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context){
+          return ViewNotes(notesv: notes,);
+        }));
+      },
+      child: Center(
+        child: Card(child:
+        Row(children: [
+          Expanded(
+            flex: 1,
+            child: Image.network("${notes['imageurl']}",fit: BoxFit.fill,height:100 ,)
+          ) ,
+          Expanded(
+            flex: 3,
+            child: ListTile(
+            title: Text("${notes['title']}"),
+            subtitle: Text("${notes['note']}",style:const TextStyle(fontSize: 14),),
+            trailing: IconButton(onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return EditNotes(docid:docid ,list: notes,);
+          }));
+            }, icon:const Icon(Icons.edit)),
+            
+              ),
+          ) , 
+          
+        ],)
+        ),
+      ),
     )
     ;
   }

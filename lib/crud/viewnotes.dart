@@ -16,8 +16,22 @@ class _ViewNotesState extends State<ViewNotes> {
         title:const  Text('View notes'),
       ),
       body:  Container(
-        child:const Column(children: [
-          
+        margin: const EdgeInsets.all(0),
+        child: Column(children: [
+          Container(
+            margin: const EdgeInsets.all(0),
+            child: Image.network("${widget.notesv['imageurl']}",
+          width: double.infinity,
+          height: 300,
+          fit: BoxFit.fill,
+          ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 15),
+            child: Text("${widget.notesv['title']}",style:const TextStyle(fontSize: 30,color: Colors.blue),)),
+             Container(
+            margin: const EdgeInsets.symmetric(vertical: 15),
+            child: Text("${widget.notesv['note']}",style:const TextStyle(fontSize: 20),)),
         ]) ,
       ),
     );
