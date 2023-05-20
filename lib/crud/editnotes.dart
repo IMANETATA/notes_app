@@ -1,9 +1,9 @@
 import 'dart:math';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_core/firebase_core.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
+//import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -12,8 +12,11 @@ import 'package:notes_app/component/alert.dart';
 import 'package:path/path.dart' ;
 //as path
 class EditNotes extends StatefulWidget {
-  const EditNotes({super.key});
 
+        late final  docid;
+        final list;
+        EditNotes({Key? key, this.docid,this.list}) : super(key: key);
+            // EditNotes({super.key});
   @override
   State<EditNotes> createState() => _EditNotesState();
 }
@@ -31,34 +34,36 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
 
 //ajouter la note dans la base
       editNotes(context) async{
-        if(file == null){ // if he dosnt choose an image
-          return AwesomeDialog(context: this.context,
-          title:'important',
-          body: const Text("please choose an image for note"),
-          dialogType: DialogType.error
-          )..show();
-        }
-        var formdata = formstate.currentState;
 
-                if (formdata!.validate()) {
+
+         var formdata = formstate.currentState;
+        if(file == null){ // if he dosnt choose an image
+           if (formdata!.validate()) {
           showLoading(context);
           formdata.save();
           
-          if (file != null) {
-            await ref.putFile(file!);
-            imageurl = await ref.getDownloadURL();
-          }
-          
-          await notesref.add({
+          await notesref.doc(widget.docid).update({
             "title": title,
             "note": note,
-            "imageurl": imageurl,
-            "userid": FirebaseAuth.instance.currentUser!.uid // récupérer l'utilisateur actuel connecté
+      // récupérer l'utilisateur actuel connecté
           });
           
           Navigator.of(context).pushNamed("homepage");
         }
-
+        }
+          if (formdata!.validate()) {
+          showLoading(context);
+          formdata.save();
+          
+          await notesref.doc(widget.docid).update({
+            "title": title,
+            "note": note,
+            "imageurl": imageurl,
+            // récupérer l'utilisateur actuel connecté
+          });
+          
+          Navigator.of(context).pushNamed("homepage");
+        }
        /* if(formdata!.validate()){
           showLoading(context);
           formdata.save();
@@ -79,7 +84,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const  Text("add note"),
+        title:const  Text("edit note"),
       ),
       body:  Container(
         padding:const EdgeInsets.all(0),
@@ -89,6 +94,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
             child: Column(
             children: [
               TextFormField(
+                initialValue:widget.list['title'] ,
                           validator: (val){
               if(val!.length>30){
           return "title cant be larger than 30 caractere";
@@ -110,6 +116,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
                 ),
               ),
                TextFormField(
+                 initialValue:widget.list['note'] ,
                             validator: (val){
                 if(val!.length>255){
             return "note cant be larger than 255 letter";
@@ -136,7 +143,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
               },
             // style:ButtonStyle(backgroundColor: Colors) ,
                child: 
-             const  Text("add image")
+             const  Text("edit image")
               ),
                ElevatedButton(
                
@@ -145,7 +152,7 @@ GlobalKey<FormState> formstate=  GlobalKey<FormState>();
                 },
             // style:ButtonStyle(backgroundColor: Colors) ,
                child: 
-              const Text("save")
+              const Text("edit note")
               )
             ],
           ))

@@ -1,3 +1,4 @@
+ 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
@@ -69,7 +70,17 @@ class _HomePageState extends State<HomePage> {
         return ListView.builder(
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, i) {
-            return ListNotes(notes: snapshot.data!.docs[i],);
+            return Dismissible(
+              onDismissed: (direction)async{
+              await  notesref.doc(snapshot.data!.docs[i].id).delete();
+              await FirebaseStorage.instance.refFromURL(snapshot.data!.docs[i]['imageurl']).delete().then((value) {
+                print("delete");
+              } );
+              },
+              key: UniqueKey(), 
+              child: ListNotes(
+                notes: snapshot.data!.docs[i],
+                docid:snapshot.data!.docs[i].id,));
            // return Text("${snapshot.data!.docs[i].data()?['title'] ?? 'N/A'}");
           //  return Text("${snapshot.data!.docs[i].data()['title']}");
             // return ListNotes(notes: notes[index]);
@@ -109,9 +120,11 @@ class ListNotes extends StatelessWidget {
 
   //const listNotes({super.key});
 // ignore: prefer_typing_uninitialized_variables
-final notes;
+        final notes;
+        final docid;
 
-const ListNotes({super.key, this.notes});
+
+        ListNotes({super.key, this.notes,this.docid});
   @override
  
   Widget build(BuildContext context) {
@@ -125,10 +138,10 @@ const ListNotes({super.key, this.notes});
         flex: 3,
         child: ListTile(
         title: Text("${notes['title']}"),
-        subtitle: Text("${notes["note"]}"),
+        subtitle: Text("${notes['note']}"),
         trailing: IconButton(onPressed: (){
       Navigator.of(context).push(MaterialPageRoute(builder: (context){
-        return const EditNotes();
+        return EditNotes(docid:docid ,list: notes,);
       }));
         }, icon:const Icon(Icons.edit)),
         
